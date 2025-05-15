@@ -1,0 +1,46 @@
+package com.github.jinn9.product.controller;
+
+import com.github.jinn9.product.dto.ProductRequestDto;
+import com.github.jinn9.product.dto.ProductResponseDto;
+import com.github.jinn9.product.dto.ResponseDto;
+import com.github.jinn9.product.entity.Product;
+import com.github.jinn9.product.service.ProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+public class ProductController {
+
+    private final ProductService productService;
+
+    @PostMapping("/api/products")
+    public ResponseEntity<ResponseDto> createProduct(@RequestBody @Validated ProductRequestDto productRequestDto) {
+        Product product = new Product(
+                productRequestDto.getName(),
+                productRequestDto.getPrice(),
+                productRequestDto.getStockQuantity()
+        );
+
+        productService.createProduct(product);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ResponseDto(HttpStatus.CREATED.value(), "Product created"));
+    }
+
+    @GetMapping("/api/products/{productId}")
+    public ResponseEntity<ProductResponseDto> findProduct(@PathVariable("productId") Long productId) {
+        Product product = productService.findProduct(productId);
+        ProductResponseDto productResponseDto = new ProductResponseDto(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getStockQuantity()
+        );
+        return ResponseEntity.ok(productResponseDto);
+    }
+}
