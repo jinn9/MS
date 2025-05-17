@@ -1,0 +1,38 @@
+services:
+  member:
+    image: jinn9/member
+    container_name: member
+    ports:
+      - 8080:8080
+    deploy:
+      resources:
+        limits:
+          memory: 700m # limit memory to 700m
+    networks: # join services in the same network
+      - service
+  product:
+    image: jinn9/product
+    container_name: product
+    ports:
+      - 8090:8090
+    deploy:
+      resources:
+        limits:
+          memory: 700m # limit memory to 700m
+    networks: # join services in the same network
+      - service
+  order:
+    image: jinn9/order
+    container_name: order
+    ports:
+      - 8070:8070
+    deploy:
+      resources:
+        limits:
+          memory: 700m # limit memory to 700m
+    networks: # join services in the same network
+      - service
+
+networks: # create networks
+  service:
+    driver: bridge
