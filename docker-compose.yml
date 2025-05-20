@@ -25,7 +25,7 @@ services:
     image: jinn9/order
     container_name: order
     ports:
-      - 8070:8070
+      - 9000:9000
     deploy:
       resources:
         limits:
