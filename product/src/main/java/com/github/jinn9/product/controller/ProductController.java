@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class ProductController {
@@ -42,5 +45,21 @@ public class ProductController {
                 product.getStockQuantity()
         );
         return ResponseEntity.ok(productResponseDto);
+    }
+
+    @GetMapping("/api/products")
+    public ResponseEntity<List<ProductResponseDto>> findProducts(@RequestParam(name = "productIds", required = false) List<Long> productIds) {
+        List<Product> products = productService.findProducts(productIds);
+        List<ProductResponseDto> response = new ArrayList<>();
+        products.forEach(product -> {
+            ProductResponseDto productResponseDto = new ProductResponseDto(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getStockQuantity()
+            );
+            response.add(productResponseDto);
+        });
+        return ResponseEntity.ok(response);
     }
 }

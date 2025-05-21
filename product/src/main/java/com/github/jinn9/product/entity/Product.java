@@ -13,12 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Product extends BaseEntity {
 
-    public Product(String name, int price, int stockQuantity) {
-        this.name = name;
-        this.price = price;
-        this.stockQuantity = stockQuantity;
-    }
-
     @Id @GeneratedValue
     @Column(name = "product_id")
     private Long id;
@@ -26,5 +20,13 @@ public class Product extends BaseEntity {
     private String name;
     private int price;
     private int stockQuantity;
+
+    public Product(String name, int price, int stockQuantity) {
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
+
+
 
 }
