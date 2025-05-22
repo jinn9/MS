@@ -1,5 +1,6 @@
 package com.github.jinn9.product.entity;
 
+import com.github.jinn9.product.exception.NotEnoughStockException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +26,18 @@ public class Product extends BaseEntity {
         this.name = name;
         this.price = price;
         this.stockQuantity = stockQuantity;
+    }
+
+    public void addStock(int stockQuantity) {
+        this.stockQuantity += stockQuantity;
+    }
+
+    public void removeStock(int stockQuantity) {
+        int remaining = this.stockQuantity - stockQuantity;
+        if (remaining < 0) {
+            throw new NotEnoughStockException("Not enough stock");
+        }
+        this.stockQuantity = remaining;
     }
 
 

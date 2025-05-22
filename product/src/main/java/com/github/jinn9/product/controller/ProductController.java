@@ -63,11 +63,19 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/api/products/{productId}")
-    public ResponseEntity<ResponseDto> updateProduct(@PathVariable(name = "productId") Long productId,
+    @PostMapping("/api/products/{productId}/add")
+    public ResponseEntity<ResponseDto> addStock(@PathVariable(name = "productId") Long productId,
                                                     @RequestParam(name = "stockQuantity") int stockQuantity) {
 
-        productService.updateStockQuantity(productId, stockQuantity);
+        productService.addStock(productId, stockQuantity);
+        return ResponseEntity.ok(new ResponseDto(HttpStatus.OK.value(), "Product updated"));
+    }
+
+    @PostMapping("/api/products/{productId}/remove")
+    public ResponseEntity<ResponseDto> removeStock(@PathVariable(name = "productId") Long productId,
+                                                @RequestParam(name = "stockQuantity") int stockQuantity) {
+
+        productService.removeStock(productId, stockQuantity);
         return ResponseEntity.ok(new ResponseDto(HttpStatus.OK.value(), "Product updated"));
     }
 }

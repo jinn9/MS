@@ -31,10 +31,18 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateStockQuantity(Long productId, int stockQuantity) {
+    public void addStock(Long productId, int stockQuantity) {
         Product product = productRepository.findById(productId).orElseThrow(() ->
                 new ProductNotFoundException("Product not found"));
 
-        product.setStockQuantity(stockQuantity);
+        product.addStock(stockQuantity);
+    }
+
+    @Transactional
+    public void removeStock(Long productId, int stockQuantity) {
+        Product product = productRepository.findById(productId).orElseThrow(() ->
+                new ProductNotFoundException("Product not found"));
+
+        product.removeStock(stockQuantity);
     }
 }
