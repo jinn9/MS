@@ -1,5 +1,6 @@
 package com.github.jinn9.order.entity;
 
+import com.github.jinn9.order.api.domain.Member;
 import com.github.jinn9.order.enumeration.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,11 +35,22 @@ public class Order extends BaseEntity {
     }
 
     // TODO: update the method to receive member, delivery and orderProduct list as arguments
-    public static Order createOrder(Long memberId) {
+    public static Order createOrder(Member member, List<OrderProduct> orderProducts) {
         Order order = new Order();
-        order.setMemberId(memberId);
+        order.setMemberId(member.getId());
+        for (OrderProduct orderProduct : orderProducts) {
+            order.addOrderProduct(orderProduct);
+        }
         order.setStatus(OrderStatus.PENDING);
         order.setOrderDate(LocalDateTime.now());
         return order;
+    }
+
+    public int getTotalPrice() {
+        int total = 0;
+        for (OrderProduct orderProduct : orderProducts) {
+            total += orderProduct.getTotalPrice();
+        }
+        return total;
     }
 }
