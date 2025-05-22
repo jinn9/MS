@@ -29,4 +29,12 @@ public class ProductService {
     public List<Product> findProducts(List<Long> productIds) {
         return productIds == null ? productRepository.findAll() : productRepository.findProducts(productIds);
     }
+
+    @Transactional
+    public void updateStockQuantity(Long productId, int stockQuantity) {
+        Product product = productRepository.findById(productId).orElseThrow(() ->
+                new ProductNotFoundException("Product not found"));
+
+        product.setStockQuantity(stockQuantity);
+    }
 }

@@ -62,4 +62,12 @@ public class ProductController {
         });
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping("/api/products/{productId}")
+    public ResponseEntity<ResponseDto> updateProduct(@PathVariable(name = "productId") Long productId,
+                                                    @RequestParam(name = "stockQuantity") int stockQuantity) {
+
+        productService.updateStockQuantity(productId, stockQuantity);
+        return ResponseEntity.ok(new ResponseDto(HttpStatus.OK.value(), "Product updated"));
+    }
 }
