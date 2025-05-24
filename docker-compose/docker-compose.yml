@@ -1,0 +1,63 @@
+services:
+  eurekaserver:
+    image: jinn9/eurekaserver
+    container_name: eurekaserver
+    ports:
+      - 8070:8070
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+    environment:
+      SPRING_APPLICATION_NAME: "eurekaserver"
+
+  member:
+    image: jinn9/member
+    container_name: member
+    ports:
+      - 8080:8080
+    depends_on:
+      eurekaserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "member"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+
+  product:
+    image: jinn9/product
+    container_name: product
+    ports:
+      - 8090:8090
+    depends_on:
+      eurekaserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "product"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+
+  order:
+    image: jinn9/order
+    container_name: order
+    ports:
+      - 9000:9000
+    depends_on:
+      eurekaserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "order"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+
+networks: # create networks
+  service:
+    driver: bridge

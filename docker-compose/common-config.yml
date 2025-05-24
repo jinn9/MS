@@ -1,0 +1,18 @@
+services:
+  network-deploy-service:
+    networks: # joins services in the same network
+      - service
+
+  microservice-base-config:
+    extends:
+      service: network-deploy-service
+    deploy:
+      resources:
+        limits:
+          memory: 700m # limits memory to 700m
+
+  microservice-eureka-config:
+    extends:
+      service: microservice-base-config
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
