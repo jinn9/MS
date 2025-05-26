@@ -23,12 +23,14 @@ public class GatewayserverApplication {
 				.route(p -> p
 						.path("/member/**")
 						.filters( f -> f.rewritePath("/member/(?<segment>.*)","/${segment}")
-								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+								.circuitBreaker(config -> config.setName("memberCircuitBreaker")))
 						.uri("lb://MEMBER"))
 				.route(p -> p
 						.path("/product/**")
 						.filters( f -> f.rewritePath("/product/(?<segment>.*)","/${segment}")
-								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+								.circuitBreaker(config -> config.setName("productCircuitBreaker")))
 						.uri("lb://PRODUCT"))
 				.route(p -> p
 						.path("/order/**")
