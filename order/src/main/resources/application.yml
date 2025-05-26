@@ -15,6 +15,10 @@ spring:
   jpa:
     #    database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 
 management:
   endpoints:
@@ -50,3 +54,11 @@ info:
     name: "order"
     description: "Order Service"
     version: "1.0.0"
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10 # how many requests to monitor before switching from closed to open state
+      permittedNumberOfCallsInHalfOpenState: 2 # when in half state, use this amount of requests to decide to move to closed or open state
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000

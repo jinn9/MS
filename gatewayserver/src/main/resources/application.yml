@@ -8,7 +8,7 @@ spring:
     gateway:
       discovery: # connect to eureka server and locate all the microservices
         locator:
-          enabled: true
+          enabled: false
           lowerCaseServiceId: true
 
 management:
@@ -38,9 +38,10 @@ info:
     description: "Gateway Server"
     version: "1.0.0"
 
-#logging:
-#  level:
-#    com:
-#      github:
-#        jinn9:
-#          gatewayserver: DEBUG
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10 # how many requests to monitor before switching from closed to open state
+      permittedNumberOfCallsInHalfOpenState: 2 # when in half state, use this amount of requests to decide to move to closed or open state
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000
