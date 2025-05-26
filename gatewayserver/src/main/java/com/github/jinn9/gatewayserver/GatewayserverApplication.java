@@ -26,7 +26,6 @@ public class GatewayserverApplication {
 	}
 
 
-//	Config for custom routing
 	@Bean
 	public RouteLocator routeConfig(RouteLocatorBuilder routeLocatorBuilder) {
 		return routeLocatorBuilder.routes()
