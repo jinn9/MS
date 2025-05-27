@@ -3,3 +3,5 @@
 
 ### IntelliJ IDEA ###
 .idea
+
+docker-compose/.data
