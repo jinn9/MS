@@ -5,6 +5,7 @@ import com.github.jinn9.member.exception.DuplicateMemberException;
 import com.github.jinn9.member.exception.MemberNotFoundException;
 import com.github.jinn9.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -25,6 +27,8 @@ public class MemberService {
         }
 
         memberRepository.save(member);
+
+        log.debug("member created. id: " + member.getId());
     }
 
     public Member findMember(Long memberId) {

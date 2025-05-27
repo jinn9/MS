@@ -9,6 +9,7 @@ import com.github.jinn9.order.entity.OrderProduct;
 import com.github.jinn9.order.exception.OrderNotFoundException;
 import com.github.jinn9.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -45,6 +47,8 @@ public class OrderService {
         Order order = Order.createOrder(member, orderProducts);
 
         orderRepository.save(order);
+
+        log.debug("order created. id: " + order.getId());
     }
 
     public Order findOrder(Long orderId) {

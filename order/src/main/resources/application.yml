@@ -58,6 +58,15 @@ info:
     description: "Order Service"
     version: "1.0.0"
 
+logging:
+  level:
+    com:
+      github:
+        jinn9:
+          order: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 resilience4j.circuitbreaker:
   configs:
     default:
