@@ -4,17 +4,27 @@ server:
 spring:
   application:
     name: "delivery"
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
   cloud:
     function:
-      definition: email|sms
+      definition: createDelivery
     stream:
       bindings:
-        emailsms-in-0:
+        createDelivery-in-0:
           destination: send-communication
           group: ${spring.application.name}
-        emailsms-out-0:
-          destination: communication-sent
-      kafka:
-        binder:
-          brokers:
-            - localhost:9092
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 10s

@@ -6,10 +6,12 @@ import com.github.jinn9.order.api.service.MemberFeignClient;
 import com.github.jinn9.order.api.service.ProductFeignClient;
 import com.github.jinn9.order.entity.Order;
 import com.github.jinn9.order.entity.OrderProduct;
+import com.github.jinn9.order.event.dto.OrderMsgDto;
 import com.github.jinn9.order.exception.OrderNotFoundException;
 import com.github.jinn9.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberFeignClient memberFeignClient;
     private final ProductFeignClient productFeignClient;
+    private final StreamBridge streamBridge;
 
     @Transactional
     public void createOrder(Long memberId, Map<Long, Integer> productsMap) {
@@ -46,9 +49,23 @@ public class OrderService {
 
         Order order = Order.createOrder(member, orderProducts);
 
-        orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
 
-        log.debug("order created. id: " + order.getId());
+        log.debug("order created. id: " + savedOrder.getId());
+
+        sendCommunication(savedOrder, member);
+    }
+
+    private void sendCommunication(Order order, Member member) {
+        OrderMsgDto.AddressMsgDto address = new OrderMsgDto.AddressMsgDto(member.getAddress().getCity(),
+                member.getAddress().getProvince());
+        OrderMsgDto orderMsgDto = new OrderMsgDto(order.getId(), address);
+
+        log.info("Sending Communication request for the details: {}", orderMsgDto);
+
+        boolean result = streamBridge.send("sendCommunication-out-0", orderMsgDto);
+
+        log.info("Is the Communication request successfully triggered ? : {}", result);
     }
 
     public Order findOrder(Long orderId) {
