@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ResponseDto {
+    private Long orderId;
+    private Long deliveryId;
     private int statusCode;
     private String statusMessage;
 }

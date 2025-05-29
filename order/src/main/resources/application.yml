@@ -19,8 +19,13 @@ spring:
     openfeign:
       circuitbreaker:
         enabled: true
+    function:
+      definition: completeOrder
     stream:
       bindings:
+        completeOrder-in-0:
+          destination: delivery-to-order
+          group: ${spring.application.name}
         sendCommunication-out-0:
           destination: order-to-delivery
   rabbitmq:

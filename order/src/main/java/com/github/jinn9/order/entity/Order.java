@@ -21,6 +21,8 @@ public class Order extends BaseTimeEntity {
 
     private Long memberId;
 
+    private Long deliveryId;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
@@ -40,7 +42,7 @@ public class Order extends BaseTimeEntity {
         for (OrderProduct orderProduct : orderProducts) {
             order.addOrderProduct(orderProduct);
         }
-        order.setStatus(OrderStatus.COMPLETE);
+        order.setStatus(OrderStatus.PENDING);
         order.setOrderDate(LocalDateTime.now());
         return order;
     }

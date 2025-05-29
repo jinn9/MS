@@ -16,14 +16,14 @@ spring:
     show-sql: true
   cloud:
     function:
-      definition: createDelivery
+      definition: completeDelivery
     stream:
       bindings:
-        createDelivery-in-0:
+        completeDelivery-in-0:
           destination: order-to-delivery
           group: ${spring.application.name}
-        createDelivery-out-0:
-          destination: send-communication
+        completeDelivery-out-0:
+          destination: delivery-to-order
   rabbitmq:
     host: localhost
     port: 5672

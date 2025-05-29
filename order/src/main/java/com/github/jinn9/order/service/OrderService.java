@@ -6,6 +6,7 @@ import com.github.jinn9.order.api.service.MemberFeignClient;
 import com.github.jinn9.order.api.service.ProductFeignClient;
 import com.github.jinn9.order.entity.Order;
 import com.github.jinn9.order.entity.OrderProduct;
+import com.github.jinn9.order.enumeration.OrderStatus;
 import com.github.jinn9.order.event.dto.OrderMsgDto;
 import com.github.jinn9.order.exception.OrderNotFoundException;
 import com.github.jinn9.order.repository.OrderRepository;
@@ -79,5 +80,14 @@ public class OrderService {
 
     public List<Product> findOrderProducts(List<Long> productIds) {
         return productFeignClient.findProducts(productIds).getBody();
+    }
+
+    @Transactional
+    public void onDeliveryComplete(Long orderId, Long deliveryId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
+
+        order.setDeliveryId(deliveryId);
+        order.setStatus(OrderStatus.COMPLETE);
     }
 }
