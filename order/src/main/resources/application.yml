@@ -22,7 +22,7 @@ spring:
     stream:
       bindings:
         sendCommunication-out-0:
-          destination: send-communication
+          destination: order-to-delivery
   rabbitmq:
     host: localhost
     port: 5672

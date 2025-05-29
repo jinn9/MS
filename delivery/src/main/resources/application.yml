@@ -20,8 +20,10 @@ spring:
     stream:
       bindings:
         createDelivery-in-0:
-          destination: send-communication
+          destination: order-to-delivery
           group: ${spring.application.name}
+        createDelivery-out-0:
+          destination: send-communication
   rabbitmq:
     host: localhost
     port: 5672
