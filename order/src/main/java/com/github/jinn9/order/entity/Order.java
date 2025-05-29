@@ -34,14 +34,13 @@ public class Order extends BaseEntity {
         orderProduct.setOrder(this);
     }
 
-    // TODO: update the method to receive member, delivery and orderProduct list as arguments
     public static Order createOrder(Member member, List<OrderProduct> orderProducts) {
         Order order = new Order();
         order.setMemberId(member.getId());
         for (OrderProduct orderProduct : orderProducts) {
             order.addOrderProduct(orderProduct);
         }
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(OrderStatus.COMPLETE);
         order.setOrderDate(LocalDateTime.now());
         return order;
     }
