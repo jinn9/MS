@@ -1,4 +1,17 @@
 services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.7
+    container_name: keycloak
+    ports:
+      - "7080:8080"
+    environment:
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "admin"
+    command: "start-dev"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   read:
     image: grafana/loki:3.1.2
     command: "-config.file=/etc/loki/config.yaml -target=read"
@@ -247,8 +260,6 @@ services:
   member:
     image: jinn9/member
     container_name: member
-    ports:
-      - 8080:8080
     depends_on:
       eurekaserver:
         condition: service_healthy
@@ -268,8 +279,6 @@ services:
   product:
     image: jinn9/product
     container_name: product
-    ports:
-      - 8090:8090
     depends_on:
       eurekaserver:
         condition: service_healthy
@@ -289,8 +298,6 @@ services:
   order:
     image: jinn9/order
     container_name: order
-    ports:
-      - 9000:9000
     depends_on:
       eurekaserver:
         condition: service_healthy
@@ -328,6 +335,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_DATA_REDIS_TIMEOUT: 1s
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak:8080/realms/master/protocol/openid-connect/certs"
     extends:
       file: common-config.yml
       service: microservice-eureka-config
