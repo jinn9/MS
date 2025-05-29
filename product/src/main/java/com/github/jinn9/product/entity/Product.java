@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-public class Product extends BaseEntity {
+public class Product extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "product_id")

@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
-public class Order extends BaseEntity {
+public class Order extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "order_id")
