@@ -47,6 +47,7 @@ public class ProductController {
         return ResponseEntity.ok(productResponseDto);
     }
 
+    // TODO: use pagination
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductResponseDto>> findProducts(@RequestParam(name = "productIds", required = false) List<Long> productIds) {
         List<Product> products = productService.findProducts(productIds);
