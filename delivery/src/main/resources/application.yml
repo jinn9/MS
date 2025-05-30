@@ -24,9 +24,7 @@ spring:
           group: ${spring.application.name}
         completeDelivery-out-0:
           destination: delivery-to-order
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    connection-timeout: 10s
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
