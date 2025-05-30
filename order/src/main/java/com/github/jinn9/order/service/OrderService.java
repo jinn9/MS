@@ -33,10 +33,32 @@ public class OrderService {
 
     @Transactional
     public void createOrder(Long memberId, Map<Long, Integer> productsMap) {
-        Member member = memberFeignClient.findMember(memberId).getBody();
+        Member member = findMember(memberId);
 
-        List<Product> products = productFeignClient.findProducts(new ArrayList<>(productsMap.keySet())).getBody();
+        List<Product> products = findProducts(productsMap);
 
+        List<OrderProduct> orderProducts = createOrderProducts(productsMap, products);
+
+        Order order = Order.createOrder(member, orderProducts);
+
+        Order savedOrder = orderRepository.save(order);
+
+        log.debug("order created. id: " + savedOrder.getId());
+
+        sendCommunication(savedOrder, member);
+    }
+
+    private Member findMember(Long memberId) {
+        return memberFeignClient.findMember(memberId).getBody();
+    }
+
+    private List<Product> findProducts(Map<Long, Integer> productsMap) {
+        List<Long> productIds = new ArrayList<>(productsMap.keySet());
+        List<Product> products = productFeignClient.findProducts(productIds).getBody();
+        return products;
+    }
+
+    private List<OrderProduct> createOrderProducts(Map<Long, Integer> productsMap, List<Product> products) {
         List<OrderProduct> orderProducts = new ArrayList<>();
         for (Product product : products) {
             int count = productsMap.get(product.getId());
@@ -47,14 +69,7 @@ public class OrderService {
 
             orderProducts.add(orderProduct);
         }
-
-        Order order = Order.createOrder(member, orderProducts);
-
-        Order savedOrder = orderRepository.save(order);
-
-        log.debug("order created. id: " + savedOrder.getId());
-
-        sendCommunication(savedOrder, member);
+        return orderProducts;
     }
 
     private void sendCommunication(Order order, Member member) {

@@ -1,6 +1,7 @@
 package com.github.jinn9.order.exception;
 
 import com.github.jinn9.order.api.exception.MemberNotFoundException;
+import com.github.jinn9.order.api.exception.ProductNotFoundException;
 import com.github.jinn9.order.dto.ErrorResponseDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleMemberNotFound(MemberNotFoundException ex, WebRequest webRequest) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.badRequest().body(errorResponseDto);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleProductNotFound(ProductNotFoundException ex, WebRequest webRequest) {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(
                 webRequest.getDescription(false),
                 HttpStatus.BAD_REQUEST.value(),
