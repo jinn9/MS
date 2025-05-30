@@ -2,6 +2,7 @@ package com.github.jinn9.order.service;
 
 import com.github.jinn9.order.api.domain.Member;
 import com.github.jinn9.order.api.domain.Product;
+import com.github.jinn9.order.api.exception.ApiException;
 import com.github.jinn9.order.api.service.MemberFeignClient;
 import com.github.jinn9.order.api.service.ProductFeignClient;
 import com.github.jinn9.order.entity.Order;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,13 +33,18 @@ public class OrderService {
     private final ProductFeignClient productFeignClient;
     private final StreamBridge streamBridge;
 
+    /**
+     *
+     * @param memberId   - member id
+     * @param productMap - a map whose key is product id and value is product count
+     */
     @Transactional
-    public void createOrder(Long memberId, Map<Long, Integer> productsMap) {
+    public void createOrder(Long memberId, Map<Long, Integer> productMap) {
         Member member = findMember(memberId);
 
-        List<Product> products = findProducts(productsMap);
+        List<Product> products = findProducts(productMap);
 
-        List<OrderProduct> orderProducts = createOrderProducts(productsMap, products);
+        List<OrderProduct> orderProducts = createOrderProducts(productMap, products);
 
         Order order = Order.createOrder(member, orderProducts);
 
@@ -45,6 +52,7 @@ public class OrderService {
 
         log.debug("order created. id: " + savedOrder.getId());
 
+        // send an event to event broker
         sendCommunication(savedOrder, member);
     }
 
@@ -52,19 +60,24 @@ public class OrderService {
         return memberFeignClient.findMember(memberId).getBody();
     }
 
-    private List<Product> findProducts(Map<Long, Integer> productsMap) {
-        List<Long> productIds = new ArrayList<>(productsMap.keySet());
-        List<Product> products = productFeignClient.findProducts(productIds).getBody();
+    private List<Product> findProducts(Map<Long, Integer> productMap) {
+        Set<Long> productIdSet = productMap.keySet();
+        List<Long> productIdList = new ArrayList<>(productIdSet);
+        List<Product> products = productFeignClient.findProducts(productIdList).getBody();
+
+        if (products.size() < productIdSet.size()) {
+            throw new ApiException("Product not found");
+        }
+
         return products;
     }
 
-    private List<OrderProduct> createOrderProducts(Map<Long, Integer> productsMap, List<Product> products) {
+    private List<OrderProduct> createOrderProducts(Map<Long, Integer> productMap, List<Product> products) {
         List<OrderProduct> orderProducts = new ArrayList<>();
         for (Product product : products) {
-            int count = productsMap.get(product.getId());
+            int count = productMap.get(product.getId());
             OrderProduct orderProduct = OrderProduct.createOrderProduct(product, product.getPrice(), count);
 
-            // FIXME: if there is a product with not enough stock, all of the products cannot be ordered
             productFeignClient.removeStock(product.getId(), count);
 
             orderProducts.add(orderProduct);
@@ -87,14 +100,6 @@ public class OrderService {
     public Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
                         .orElseThrow(() -> new OrderNotFoundException("Order not found"));
-    }
-
-    public Member findOrderMember(Long memberId) {
-        return memberFeignClient.findMember(memberId).getBody();
-    }
-
-    public List<Product> findOrderProducts(List<Long> productIds) {
-        return productFeignClient.findProducts(productIds).getBody();
     }
 
     @Transactional
