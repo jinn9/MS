@@ -28,7 +28,7 @@ public class MemberService {
 
         memberRepository.save(member);
 
-        log.debug("member created. id: " + member.getId());
+        log.debug("Member created. id: " + member.getId());
     }
 
     public Member findMember(Long memberId) {

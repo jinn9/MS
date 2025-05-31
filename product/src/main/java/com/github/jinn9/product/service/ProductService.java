@@ -21,7 +21,7 @@ public class ProductService {
     @Transactional
     public void createProduct(Product product) {
         productRepository.save(product);
-        log.debug("product created. id: " + product.getId());
+        log.debug("Product created. id: " + product.getId());
     }
 
     public Product findProduct(Long productId) {

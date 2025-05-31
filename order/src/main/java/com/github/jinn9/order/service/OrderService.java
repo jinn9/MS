@@ -47,7 +47,7 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        log.debug("order created. id: " + savedOrder.getId());
+        log.debug("Order created. id: " + savedOrder.getId());
 
         // send an event to event broker
         sendCommunication(savedOrder, member);
