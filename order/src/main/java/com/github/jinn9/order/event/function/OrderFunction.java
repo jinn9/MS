@@ -20,11 +20,12 @@ public class OrderFunction {
     @Bean
     public Consumer<ResponseDto> completeOrder() {
         return responseDto -> {
-            // TODO: handle negative scenarios
             if (responseDto.getStatusCode() == HttpStatus.OK.value()) {
                 orderService.onDeliveryComplete(responseDto.getOrderId(), responseDto.getDeliveryId());
 
                 log.debug("Order " + responseDto.getOrderId() + " has been completed");
+            } else {
+                // TODO: could add logic to notify ops
             }
         };
     }
