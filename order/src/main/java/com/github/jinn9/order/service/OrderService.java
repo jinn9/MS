@@ -17,10 +17,7 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,7 +39,7 @@ public class OrderService {
     public void createOrder(Long memberId, Map<Long, Integer> productMap) {
         Member member = findMember(memberId);
 
-        List<Product> products = findProducts(productMap);
+        List<Product> products = findProducts(productMap.keySet());
 
         List<OrderProduct> orderProducts = createOrderProducts(productMap, products);
 
@@ -56,20 +53,32 @@ public class OrderService {
         sendCommunication(savedOrder, member);
     }
 
-    private Member findMember(Long memberId) {
+    public Member findMember(Long memberId) {
         return memberFeignClient.findMember(memberId).getBody();
     }
 
-    private List<Product> findProducts(Map<Long, Integer> productMap) {
-        Set<Long> productIdSet = productMap.keySet();
-        List<Long> productIdList = new ArrayList<>(productIdSet);
-        List<Product> products = productFeignClient.findProducts(productIdList).getBody();
+    public List<Product> findProducts(Set<Long> productIds) {
+        List<Product> products = productFeignClient.findProducts(new ArrayList<>(productIds)).getBody();
 
-        if (products.size() < productIdSet.size()) {
+        if (products.size() < productIds.size()) {
             throw new ApiException("Product not found");
         }
 
         return products;
+    }
+
+    public Order findOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+                        .orElseThrow(() -> new OrderNotFoundException("Order not found"));
+    }
+
+    @Transactional
+    public void onDeliveryComplete(Long orderId, Long deliveryId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
+
+        order.setDeliveryId(deliveryId);
+        order.setStatus(OrderStatus.COMPLETE);
     }
 
     private List<OrderProduct> createOrderProducts(Map<Long, Integer> productMap, List<Product> products) {
@@ -95,19 +104,5 @@ public class OrderService {
         boolean result = streamBridge.send("sendCommunication-out-0", orderMsgDto);
 
         log.info("Is the Communication request successfully triggered ? : {}", result);
-    }
-
-    public Order findOrder(Long orderId) {
-        return orderRepository.findById(orderId)
-                        .orElseThrow(() -> new OrderNotFoundException("Order not found"));
-    }
-
-    @Transactional
-    public void onDeliveryComplete(Long orderId, Long deliveryId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
-
-        order.setDeliveryId(deliveryId);
-        order.setStatus(OrderStatus.COMPLETE);
     }
 }
