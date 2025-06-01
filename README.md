@@ -14,10 +14,10 @@ This is a pet project aim to practice building a typical microservice applicatio
 - Docker
 
 ## Local development architecture
-<img width="1440" alt="Screenshot 2025-06-01 at 6 56 11 PM" src="https://github.com/user-attachments/assets/9e2657a7-6467-4298-b595-976eb5620984" />
+<img width="1164" alt="Screenshot 2025-06-01 at 7 10 49 PM" src="https://github.com/user-attachments/assets/6028ae83-fe7e-427f-b998-b769cec45041" />
 
 ## Entity Relationship Diagram
-<img width="1430" alt="Screenshot 2025-06-01 at 6 28 24 PM" src="https://github.com/user-attachments/assets/c6803955-304b-432b-b12d-693ba7bc2e10" />
+<img width="1327" alt="Screenshot 2025-06-01 at 7 14 08 PM" src="https://github.com/user-attachments/assets/dcebb432-cc1b-482a-895d-0c02bcc3405a" />
 
 ## API Specification
 
