@@ -40,16 +40,16 @@ https://documenter.getpostman.com/view/15918667/2sB2qgey9F
 ## Project Details
 
 #### Security
-Secure the APIs using client credentials grant type flow in OAuth2
+Secure APIs using OAuth 2.0, implementing token-based authentication and role-based access control for sensitive operations
 
 #### Resilience
-Ensure system stability and resilience by implementing various resiliency patterns such as circuit breaker pattern, retry pattern, and rate limiter pattern
+Enhance system stability and resilience by applying resiliency patterns such as the circuit breaker, retry, and rate limiter
 
 #### Event Streaming
-Use Kafka to establish an event-driven communication between Order and Delivery API
+Use Kafka as a message broker to establish asynchronous, event-driven communication between Order and Delivery service
 
-#### Monitoring
-Conveniently mointor all the APIs in one place
+#### Oberservability and Monitoring
+Conveniently observe and mointor all the APIs using a dashboard
 
 ##### Logging
 <img width="2560" alt="logging" src="https://github.com/user-attachments/assets/281f4ba4-90be-46fd-a1bc-4b870c7ac138" />
