@@ -20,8 +20,7 @@ This is a pet project aim to practice building a typical microservice applicatio
 <img width="1327" alt="Screenshot 2025-06-01 at 7 14 08 PM" src="https://github.com/user-attachments/assets/dcebb432-cc1b-482a-895d-0c02bcc3405a" />
 
 ## API Specification
-
-[Insert here]
+https://documenter.getpostman.com/view/15918667/2sB2qgey9F
 
 ## Project Details
 
